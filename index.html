@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family Details and Time Display</title>
+    <style>
+      .superscript {
+        vertical-align: super;
+      }
+    </style>
+  </head>
+  <body>
+    <p id="timeDisplay"></p>
+    <h3>Family Information Form</h3>
+    <form action="">
+      <label for="father-age">Father's Age:</label>
+      <input type="text" id="father-age" placeholder="Enter Father's Age" />
+      <br />
+      <label for="mother-age">Mother's Age:</label>
+      <input type="text" id="mother-age" placeholder="Enter Mother's Age" />
+      <br />
+      <button type="button" id="btn">Submit</button>
+    </form>
+    <div id="family-info">
+      <h3>Child Information</h3>
+      <p id="child-info"></p>
+    </div>
+    <script>
+      const getDayWithSuffix = (day) => {
+        if (10 <= day % 100 && day % 100 <= 20) {
+          return day + "<span class='superscript'>th</span>";
+        } else {
+          const suffixes = [
+            "<span class='superscript'>st</span>",
+            "<span class='superscript'>nd</span>",
+            "<span class='superscript'>rd</span>",
+          ];
+          return (
+            day +
+            (suffixes[(day % 10) - 1] || "<span class='superscript'>th</span>")
+          );
+        }
+      };
+      const displayTime = () => {
+        const now = new Date();
+        const dayWithSuffix = getDayWithSuffix(now.getDate());
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        };
+        const formattedDate = now.toLocaleString("en-US", options);
+
+        document.getElementById("timeDisplay").innerHTML =
+          formattedDate.replace(now.getDate(), dayWithSuffix);
+      };
+      setInterval(displayTime, 1000);
+      document.getElementById("btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        const fatherAge = document.getElementById("father-age").value;
+        const motherAge = document.getElementById("mother-age").value;
+        if (
+          isNaN(fatherAge) ||
+          isNaN(motherAge) ||
+          fatherAge === "" ||
+          motherAge === ""
+        ) {
+          document.getElementById("child-info").innerText =
+            "Please enter valid ages for both parents.";
+          return;
+        }
+        const fatherAgeNum = Number(fatherAge);
+        const motherAgeNum = Number(motherAge);
+        const totalAge = fatherAgeNum + motherAgeNum;
+        let childGender = totalAge % 2 === 0 ? "Girl" : "Boy";
+        let childInfo = `Child's Gender: ${childGender}`;
+        document.getElementById("child-info").innerHTML = childInfo;
+      });
+    </script>
+  </body>
+</html>
